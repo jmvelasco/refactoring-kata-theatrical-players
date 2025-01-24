@@ -35,12 +35,10 @@ export function statement(
 }
 
 function calculateTotalCredits(summary: PerformanceSummary, plays: Record<string, Play>) {
-  let volumeCredits = 0;
-  for (let perf of summary.performances) {
+  return summary.performances.reduce((totalCredits, perf) => {
     const play = plays[perf.playID];
-    volumeCredits += calculateCredistsFor(play, perf);
-  }
-  return volumeCredits;
+    return totalCredits + calculateCredistsFor(play, perf);
+  }, 0);
 }
 
 function formatAsUSD(amount: number) {
