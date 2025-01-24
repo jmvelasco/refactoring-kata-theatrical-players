@@ -29,15 +29,20 @@ export function statement(
     totalAmount += thisAmount;
   }
 
+  let volumeCredits = calculateTotalCredits(summary, plays);
+
+  result += `Amount owed is ${formatAsUSD(totalAmount)}\n`;
+  result += `You earned ${volumeCredits} credits\n`;
+  return result;
+}
+
+function calculateTotalCredits(summary: PerformanceSummary, plays: Record<string, Play>) {
   let volumeCredits = 0;
   for (let perf of summary.performances) {
     const play = plays[perf.playID];
     volumeCredits += calculateCredistsFor(play, perf);
   }
-
-  result += `Amount owed is ${formatAsUSD(totalAmount)}\n`;
-  result += `You earned ${volumeCredits} credits\n`;
-  return result;
+  return volumeCredits;
 }
 
 function formatAsUSD(amount: number) {
