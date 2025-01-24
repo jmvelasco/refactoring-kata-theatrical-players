@@ -17,8 +17,7 @@ export function statement(
   summary: PerformanceSummary,
   plays: Record<string, Play>
 ) {
-  let totalAmount = 0;
-  
+  let totalAmount = getTotalAmount(summary, plays);
   let result = `Statement for ${summary.customer}\n`;
 
   for (let perf of summary.performances) {
@@ -26,7 +25,6 @@ export function statement(
     let thisAmount = calculateAmount(play, perf);
     // prettier-ignore
     result += ` ${play.name}: ${formatAsUSD(thisAmount)} (${perf.audience} seats)\n`;
-    totalAmount += thisAmount;
   }
 
   result += `Amount owed is ${formatAsUSD(totalAmount)}\n`;
@@ -34,7 +32,20 @@ export function statement(
   return result;
 }
 
-function calculateTotalCredits(summary: PerformanceSummary, plays: Record<string, Play>) {
+function getTotalAmount(
+  summary: PerformanceSummary,
+  plays: Record<string, Play>
+) {
+  return summary.performances.reduce((totalAmount, performance) => {
+    const play = plays[performance.playID];
+    return totalAmount + calculateAmount(play, performance);
+  }, 0);
+}
+
+function calculateTotalCredits(
+  summary: PerformanceSummary,
+  plays: Record<string, Play>
+) {
   return summary.performances.reduce((totalCredits, perf) => {
     const play = plays[perf.playID];
     return totalCredits + calculateCredistsFor(play, perf);
