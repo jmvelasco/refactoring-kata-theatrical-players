@@ -40,25 +40,25 @@ export function statement(summary: PerformanceSummary, plays: Record<string, Pla
   result += `You earned ${volumeCredits} credits\n`;
   return result;
 }
-function calculateAmount(play: Play, perf: Performance) {
-  let thisAmount = 0;
+function calculateAmount(play: Play, performance: Performance) {
+  let totalAmount = 0;
   switch (play.type) {
     case "tragedy":
-      thisAmount = 40000;
-      if (perf.audience > 30) {
-        thisAmount += 1000 * (perf.audience - 30);
+      totalAmount = 40000;
+      if (performance.audience > 30) {
+        totalAmount += 1000 * (performance.audience - 30);
       }
       break;
     case "comedy":
-      thisAmount = 30000;
-      if (perf.audience > 20) {
-        thisAmount += 10000 + 500 * (perf.audience - 20);
+      totalAmount = 30000;
+      if (performance.audience > 20) {
+        totalAmount += 10000 + 500 * (performance.audience - 20);
       }
-      thisAmount += 300 * perf.audience;
+      totalAmount += 300 * performance.audience;
       break;
     default:
       throw new Error(`unknown type: ${play.type}`);
   }
-  return thisAmount;
+  return totalAmount;
 }
 
