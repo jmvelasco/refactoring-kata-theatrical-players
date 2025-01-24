@@ -13,15 +13,13 @@ type PerformanceSummary = {
   performances: Performance[];
 };
 
-export function statement(summary: PerformanceSummary, plays: Record<string, Play>) {
+export function statement(
+  summary: PerformanceSummary,
+  plays: Record<string, Play>
+) {
   let totalAmount = 0;
   let volumeCredits = 0;
   let result = `Statement for ${summary.customer}\n`;
-  const format = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-  }).format;
 
   for (let perf of summary.performances) {
     const play = plays[perf.playID];
@@ -29,22 +27,30 @@ export function statement(summary: PerformanceSummary, plays: Record<string, Pla
     // add volume credits
     volumeCredits += calculateCredistsFor(play, perf);
     // print line for this order
-    result += ` ${play.name}: ${format(thisAmount / 100)} (${
+    result += ` ${play.name}: ${formatAsUSD(thisAmount)} (${
       perf.audience
     } seats)\n`;
     totalAmount += thisAmount;
   }
-  result += `Amount owed is ${format(totalAmount / 100)}\n`;
+  result += `Amount owed is ${formatAsUSD(totalAmount)}\n`;
   result += `You earned ${volumeCredits} credits\n`;
   return result;
+}
+
+function formatAsUSD(amount: number) {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+  }).format(amount / 100);
 }
 
 function calculateCredistsFor(play: Play, performance: Performance) {
   const baseCredits = Math.max(performance.audience - 30, 0);
   const extraCreditsForComedyAttendees = Math.floor(performance.audience / 5);
-  
-  return "comedy" === play.type 
-    ? baseCredits + extraCreditsForComedyAttendees 
+
+  return "comedy" === play.type
+    ? baseCredits + extraCreditsForComedyAttendees
     : baseCredits;
 }
 
@@ -69,4 +75,3 @@ function calculateAmount(play: Play, performance: Performance) {
   }
   return totalAmount;
 }
-
