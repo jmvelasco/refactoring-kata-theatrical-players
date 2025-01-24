@@ -24,12 +24,9 @@ export function statement(
   for (let perf of summary.performances) {
     const play = plays[perf.playID];
     let thisAmount = calculateAmount(play, perf);
-    // add volume credits
     volumeCredits += calculateCredistsFor(play, perf);
-    // print line for this order
-    result += ` ${play.name}: ${formatAsUSD(thisAmount)} (${
-      perf.audience
-    } seats)\n`;
+    // prettier-ignore
+    result += ` ${play.name}: ${formatAsUSD(thisAmount)} (${perf.audience} seats)\n`;
     totalAmount += thisAmount;
   }
   result += `Amount owed is ${formatAsUSD(totalAmount)}\n`;
